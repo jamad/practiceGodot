@@ -1,0 +1,139 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Main.gd" type="Script" id=1]
+[ext_resource path="res://Mob.tscn" type="PackedScene" id=2]
+[ext_resource path="res://icon.png" type="Texture" id=3]
+[ext_resource path="res://Player.tscn" type="PackedScene" id=4]
+[ext_resource path="res://dodge_assets/art/enemyFlyingAlt_1.png" type="Texture" id=5]
+[ext_resource path="res://HUD.tscn" type="PackedScene" id=6]
+[ext_resource path="res://dodge_assets/art/gameover.wav" type="AudioStream" id=7]
+[ext_resource path="res://dodge_assets/art/House In a Forest Loop.ogg" type="AudioStream" id=8]
+
+[sub_resource type="Curve2D" id=1]
+
+bake_interval = 5.0
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 530, 260, 0, 0, 0, 0, -500, 240, 0, 0, 0, 0, -500, -300, 0, 0, 0, 0, 480, -300, 0, 0, 0, 0, 530, 260 )
+}
+
+[node name="Main" type="Node" index="0"]
+
+script = ExtResource( 1 )
+Mob = ExtResource( 2 )
+
+[node name="Background" type="ColorRect" parent="." index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1030.0
+margin_bottom = 600.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+color = Color( 0.0320435, 0.390625, 0.390625, 1 )
+
+[node name="TextureRect" type="TextureRect" parent="." index="1"]
+
+modulate = Color( 0, 0.409729, 0.535156, 0.25098 )
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 60.0
+margin_top = 50.0
+margin_right = 970.0
+margin_bottom = 550.0
+rect_pivot_offset = Vector2( 0, 0 )
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 0
+_sections_unfolded = [ "Material", "Visibility" ]
+
+[node name="Player" parent="." index="2" instance=ExtResource( 4 )]
+
+[node name="TimerMob" type="Timer" parent="." index="3"]
+
+process_mode = 1
+wait_time = 0.5
+one_shot = false
+autostart = false
+
+[node name="TimerScore" type="Timer" parent="." index="4"]
+
+process_mode = 1
+wait_time = 1.0
+one_shot = false
+autostart = false
+
+[node name="TimerStart" type="Timer" parent="." index="5"]
+
+process_mode = 1
+wait_time = 2.0
+one_shot = true
+autostart = false
+
+[node name="PlayerStart" type="Position2D" parent="." index="6"]
+
+position = Vector2( 500, 300 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="PathMob" type="Path2D" parent="." index="7"]
+
+position = Vector2( 520, 320 )
+curve = SubResource( 1 )
+
+[node name="MobSpawner" type="PathFollow2D" parent="PathMob" index="0"]
+
+position = Vector2( 530, 260 )
+rotation = -3.12217
+offset = 0.0
+h_offset = 0.0
+v_offset = 0.0
+rotate = true
+cubic_interp = true
+loop = true
+lookahead = 4.0
+
+[node name="SpriteForDebug" type="Sprite" parent="PathMob/MobSpawner" index="0"]
+
+position = Vector2( 0.201832, 0 )
+scale = Vector2( 0.596339, 0.421053 )
+texture = ExtResource( 5 )
+
+[node name="HUD" parent="." index="8" instance=ExtResource( 6 )]
+
+[node name="AudioGameover" type="AudioStreamPlayer" parent="." index="9"]
+
+stream = ExtResource( 7 )
+volume_db = 0.0
+autoplay = false
+mix_target = 0
+bus = "Master"
+
+[node name="AudioBGM" type="AudioStreamPlayer" parent="." index="10"]
+
+stream = ExtResource( 8 )
+volume_db = 0.0
+autoplay = false
+mix_target = 0
+bus = "Master"
+
+[connection signal="hit" from="Player" to="." method="game_over"]
+
+[connection signal="timeout" from="TimerMob" to="." method="_on_TimerMob_timeout"]
+
+[connection signal="timeout" from="TimerScore" to="." method="_on_TimerScore_timeout"]
+
+[connection signal="timeout" from="TimerStart" to="." method="_on_TimerStart_timeout"]
+
+[connection signal="start_game" from="HUD" to="." method="new_game"]
+
+
