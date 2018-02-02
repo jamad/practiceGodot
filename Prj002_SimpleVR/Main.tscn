@@ -1,0 +1,82 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Main.gd" type="Script" id=1]
+[ext_resource path="res://addons/godot-openvr/scenes/ovr_first_person.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/godot-openvr/scenes/Function_Teleport.tscn" type="PackedScene" id=3]
+[ext_resource path="res://addons/godot-openvr/scenes/Function_Direct_movement.tscn" type="PackedScene" id=4]
+[ext_resource path="res://grid.shader" type="Shader" id=5]
+[ext_resource path="res://Cube.tscn" type="PackedScene" id=6]
+
+[sub_resource type="PlaneShape" id=1]
+
+plane = Plane( 0, 1, 0, 0 )
+
+[sub_resource type="PlaneMesh" id=2]
+
+size = Vector2( 1000, 1000 )
+subdivide_width = 50
+subdivide_depth = 50
+
+[sub_resource type="ShaderMaterial" id=3]
+
+render_priority = 0
+shader = ExtResource( 5 )
+shader_param/scale = Vector2( 50, 50 )
+_sections_unfolded = [ "shader_param" ]
+
+[node name="Main" type="Node" index="0"]
+
+script = ExtResource( 1 )
+
+[node name="OVRFirstPerson" parent="." index="0" instance=ExtResource( 2 )]
+
+[node name="Function_Teleport" parent="OVRFirstPerson/Left_Hand" index="1" instance=ExtResource( 3 )]
+
+[node name="Function_Direct_movement" parent="OVRFirstPerson/Right_Hand" index="1" instance=ExtResource( 4 )]
+
+[node name="Floor" type="StaticBody" parent="." index="1"]
+
+input_ray_pickable = true
+input_capture_on_drag = false
+collision_layer = 1
+collision_mask = 1
+friction = 1.0
+bounce = 0.0
+constant_linear_velocity = Vector3( 0, 0, 0 )
+constant_angular_velocity = Vector3( 0, 0, 0 )
+
+[node name="FloorCollision" type="CollisionShape" parent="Floor" index="0"]
+
+shape = SubResource( 1 )
+disabled = false
+
+[node name="FloorMesh" type="MeshInstance" parent="Floor" index="1"]
+
+layers = 1
+material_override = null
+cast_shadow = 1
+extra_cull_margin = 0.0
+use_in_baked_light = false
+lod_min_distance = 0.0
+lod_min_hysteresis = 0.0
+lod_max_distance = 0.0
+lod_max_hysteresis = 0.0
+mesh = SubResource( 2 )
+skeleton = NodePath("..")
+material/0 = SubResource( 3 )
+_sections_unfolded = [ "Geometry", "material" ]
+
+[node name="Spatial" type="Spatial" parent="." index="2"]
+
+[node name="Cube" parent="Spatial" index="0" instance=ExtResource( 6 )]
+
+[node name="Cube2" parent="Spatial" index="1" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.940052, 0, -1.40326 )
+
+[node name="Cube3" parent="Spatial" index="2" instance=ExtResource( 6 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.609904, -2.38419e-07, -1.5789 )
+
+
+[editable path="OVRFirstPerson"]
